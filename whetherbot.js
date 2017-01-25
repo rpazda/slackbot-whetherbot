@@ -12,6 +12,7 @@ var bot = controller.spawn({
 var wundergroundkey = config.wundergroundkey;
 var lat = config.lat;
 var lon = config.lon;
+var locationString = config.locationString;
 
 bot.startRTM(function(err, bot, payload){
 	if (err){
@@ -21,9 +22,9 @@ bot.startRTM(function(err, bot, payload){
 
 controller.hears(["!whetherbot"],["ambient", "direct_message"],function(bot,message){
 	var helptext = 
-		"WhetherBot commands: \n!temp: Displays the local temperature near UCF"
-		+"\n!weatherinfo: Gives general weather information near UCF"
-		+"\n!rawweatherdata: Displays all available weather data near UCF as unformatted JSON (only direct message)"
+		"WhetherBot commands: \n!temp: Displays the local temperature near " + locationString
+		+"\n!weatherinfo: Gives general weather information near " + locationString
+		+"\n!rawweatherdata: Displays all available weather data near "+ locationString +" as unformatted JSON (only direct message)"
 	;
 	bot.reply(message, helptext);
 });
@@ -41,7 +42,7 @@ controller.hears(["!temp"],["ambient", "direct_message"],function(bot,message){
 	var actualTemp = actualF + "° F " + "(" + actualC + "° C)";
 	var feelslike = feelF + "° F " + "(" + feelC + "° C)";
 	
-	bot.reply(message, "The current temperature at UCF is " + actualTemp + "\nUCF temperature feels like " + feelslike);
+	bot.reply(message, "The current temperature at "+ locationString +" is " + actualTemp + "\n" + locationString +" temperature feels like " + feelslike);
 	
 });
 
@@ -58,7 +59,7 @@ controller.hears(["!feelslike"],["ambient", "direct_message"],function(bot,messa
 	var actualTemp = actualF + "° F " + "(" + actualC + "° C)";
 	var feelslike = feelF + "° F " + "(" + feelC + "° C)";
 	
-	bot.reply(message, "The current temperature at UCF is " + actualTemp + "\nUCF temperature feels like " + feelslike);
+	bot.reply(message, "The current temperature at "+ locationString+" is " + actualTemp + "\n" + locationString +" temperature feels like " + feelslike);
 	
 });
 
@@ -83,7 +84,7 @@ controller.hears(["!weatherinfo"],["ambient", "direct_message"],function(bot,mes
 	var actualTemp = actualF + "° F " + "(" + actualC + "° C)";
 	var feelslike = feelF + "° F " + "(" + feelC + "° C)";
 	
-	bot.reply(message, "The weather near UCF is " + weatherType
+	bot.reply(message, "The weather near " + locationString + " is " + weatherType
 		+ "\nThe current temperature is " + actualTemp + "\nThe temperature feels like " + feelslike
 		+ "\nThe relative humidity is " + relHumid + "\nThe UV index is " + UVindex 
 		+ "\nThe wind is blowing " + windSpeed + " mph " + windDir);
@@ -104,7 +105,7 @@ function getWeatherData(){
 	//console.log(weatherdata);
 	//console.log(parsedWeatherData);
 	
-	var connectionString = "http://api.wunderground.com/api/8f4f737948165dbd/conditions/q/FL/Oviedo.json"
+	var connectionString = "http://api.wunderground.com/api/" + wundergroundkey + "/conditions/q/" + lat + "/" + lon + ".json";
 	var weatherData = httpGet(connectionString);
 	
 	var parsedWeatherData =  JSON.parse(weatherData);
@@ -114,7 +115,7 @@ function getWeatherData(){
 
 function getRawWeatherData(){
 
-	var connectionString = "http://api.wunderground.com/api/8f4f737948165dbd/conditions/q/FL/Oviedo.json"
+	var connectionString = "http://api.wunderground.com/api/" + wundergroundkey + "/conditions/q/" + lat + "/" + lon + ".json";
 	var weatherData = httpGet(connectionString);
 	
 	return weatherData;
